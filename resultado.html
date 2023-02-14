@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <style>
+body {
+  display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   height: 100vh;
+   margin: 0;
+  background-color: #000;
+  color: #fff;
+  font-family: "Helvetica Neue", sans-serif;
+  animation: fadeIn 1s ease-in;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  color: #fff;
+}
+table {
+border-collapse: collapse;
+width: 100%;
+}
+
+th, td {
+border: 1px solid #fff;
+padding: 8px;
+text-align: left;
+}
+
+a {
+color: #fff;
+text-decoration: none;
+}
+
+
+button {
+background-color: #fff;
+color: #000;
+border: none;
+border-radius: 5px;
+padding: 10px 20px;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+}
+
+button:hover {
+background-color: #000;
+color: #fff;
+}
+.battle-info {
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+margin-bottom: 1rem;
+}
+
+.battle-info label {
+width: 40%;
+text-align: right;
+padding-right: 1rem;
+}
+
+.battle-info input[type="text"] {
+width: 55%;
+padding: 0.5rem;
+font-size: 1rem;
+}
+    </style>
+<head>
+	<title>Resultado da Batalha</title>
+</head>
+<body>
+	<h1>Resultado da Batalha</h1>
+	<p>Data da Batalha: <span id="sorteioData"></span></p>
+	<p>Número da Batalha: <span id="sorteioNumero"></span></p>
+	<table id="tabela-confrontos">
+		<tr>
+			<th>Confronto</th>
+			<th>Oitavas de finais</th>
+			<th>Quartas de finais</th>
+			<th>Semi-finais</th>
+			<th>Final</th>
+		</tr>
+	</table>
+<script>
+	let sorteioData = new URL(window.location.href).searchParams.get("sorteioData");
+	let sorteioNumero = new URL(window.location.href).searchParams.get("sorteioNumero");
+	let sorteioResultado = new URL(window.location.href).searchParams.get("sorteioResultado").split(",");
+
+	document.getElementById("sorteioData").innerHTML = sorteioData;
+	document.getElementById("sorteioNumero").innerHTML = sorteioNumero;
+
+	let tabelaConfrontos = document.getElementById("tabela-confrontos");
+	let resultado = "";
+	for (let i = 0; i < sorteioResultado.length; i += 2) {
+		resultado += "<tr>";
+		resultado += "<td>" + (i / 2 + 1) + "</td>";
+		resultado += "<td>" + sorteioResultado[i] + " x " + sorteioResultado[i + 1] + "</td>";
+		resultado += "<td></td>";
+		resultado += "<td></td>";
+		resultado += "<td></td>";
+		resultado += "</tr>";
+	}
+	tabelaConfrontos.innerHTML += resultado;
+
+ // Adiciona um botão na página para exportar a tabela de confrontos para CSV
+var btnExport = document.createElement("button");
+btnExport.innerHTML = "Exportar para CSV";
+
+// Adiciona uma função de click ao botão
+btnExport.addEventListener("click", function(){
+  // Pega a tabela de confrontos
+  var table = document.getElementById("tabela-confrontos");
+  
+  // Inicia uma string para armazenar os dados da tabela
+  var csvString = "";
+  
+  // Loop pelas linhas da tabela
+  for(var i = 0; i < table.rows.length; i++){
+    var rowData = table.rows[i].cells;
+    
+    // Loop pelas colunas da linha atual
+    for(var j = 0; j < rowData.length; j++){
+      // Adiciona o texto da célula atual à string de dados
+      csvString += rowData[j].innerHTML + ",";
+    }
+    
+    // Adiciona uma quebra de linha para separar as linhas
+    csvString += "\n";
+  }
+  
+  // Cria um link para baixar o arquivo CSV
+  var downloadLink = document.createElement("a");
+  downloadLink.href = "data:text/csv;charset=utf-8," + encodeURI(csvString);
+  downloadLink.download = "confrontos.csv";
+  
+  // Clica no link para baixar o arquivo
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+});
+
+// Adiciona o botão na página
+document.body.appendChild(btnExport);
+
+</script>
+</body>
+</html>

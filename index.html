@@ -1,0 +1,239 @@
+
+<html>
+<head>
+    <title>Sorteio BDE</title>
+
+<style>
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #F5F5F5;
+  color: #000;
+  font-family: "Helvetica Neue", sans-serif;
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  color: #000;
+  animation: fadeIn 1s;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  animation: fadeIn 1s;
+}
+
+th, td {
+  border: 1px solid #000;
+  padding: 8px;
+  text-align: left;
+  animation: fadeIn 1s;
+}
+
+a {
+  color: #000;
+  text-decoration: none;
+  animation: fadeIn 1s;
+}
+
+button {
+  background-color: #000;
+  color: #FFF;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  animation: fadeIn 1s;
+}
+
+button:hover {
+  background-color: #FFF;
+  color: #000;
+  animation: fadeIn 1s;
+}
+
+.battle-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  animation: fadeIn 1s;
+}
+
+.battle-info label {
+  width: 40%;
+  text-align: right;
+  padding-right: 1rem;
+  animation: fadeIn 1s;
+}
+
+.battle-info input[type="text"] {
+  width: 55%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: #FFF;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 5px;
+  animation: fadeIn 1s;
+}
+
+.box {
+  width: 50%;
+  background-color: #FFF;
+  padding: 1rem;
+  border: 1px solid #000;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  animation: fadeIn 1s;
+  display: none;
+}
+</style>
+<script>
+        let inscritos = [];
+        let sorteados = [];
+        let mulheresOuNB = 0;
+        let iniciantes = 0;
+
+        function adicionaInscrito(nome, genero, batalhouAntes) {
+            inscritos.push({nome: nome, genero: genero, batalhouAntes: batalhouAntes});
+            atualizaTabela();
+        }
+
+        function sorteia() {
+            sorteados = [];
+            mulheresOuNB = 0;
+            iniciantes = 0;
+  	     if (inscritos.length < 16) {
+               alert("Não há inscritos suficientes para o sorteio.");
+               return;
+         }
+		while (sorteados.length < 16) {
+                let n = Math.floor(Math.random() * inscritos.length);
+                let sorteado = inscritos[n];
+                if (mulheresOuNB < 4 && (sorteado.genero == "Feminino" || sorteado.genero == "Não binário") && !sorteados.includes(sorteado)) {
+                    sorteados.push(sorteado);
+                    mulheresOuNB++;
+                } else if (iniciantes < 2 && !sorteado.batalhouAntes && !sorteados.includes(sorteado)) {
+                    sorteados.push(sorteado);
+                    iniciantes++;
+                } else if (!sorteados.includes(sorteado)) {
+                    sorteados.push(sorteado);
+                }
+let sorteioData = document.getElementById("battle-date").value;
+let sorteioNumero = document.getElementById("battle-number").value;
+let sorteioResultado = sorteados.map(function(sorteado) {
+return sorteado.nome;
+}).join(",");
+window.location.assign("resultado.html?sorteioData=" + sorteioData +
+"&sorteioNumero=" + sorteioNumero + "&sorteioResultado=" + sorteioResultado);
+            }
+            atualizaTabelaSorteio();
+        }
+
+        function atualizaTabelaSorteio() {
+            let tabelaSorteio = document.getElementById("tabela-sorteio");
+            let resultado = "<tr>";
+            resultado += "<th>Nome</th>";
+            resultado += "<th>Gênero</th>";
+            resultado += "<th>Batalhou Antes?</th>";
+            resultado += "</tr>";
+            for (let sorteado of sorteados) {
+                resultado += "<tr>";
+                resultado += "<td>" + sorteado.nome + "</td>";
+                resultado += "<td>" + sorteado.genero + "</td>";
+                resultado += "<td>" + sorteado.batalhouAntes + "</td>";
+                resultado += "</tr>";
+            }
+            tabelaSorteio.innerHTML = resultado;
+        }
+        
+        function atualizaTabela() {
+            let tabelaInscritos = document.getElementById("tabela-inscritos");
+            let resultado = "<tr>";
+            resultado += "<th>Nome</th>";
+            resultado += "<th>Gênero</th>";
+            resultado += "<th>Batalhou Antes?</th>";
+            resultado += "</tr>";
+            for (let inscrito of inscritos) {
+                resultado += "<tr>";
+                resultado += "<td>" + inscrito.nome + "</td>";
+                resultado += "<td>" + inscrito.genero + "</td>";
+                resultado += "<td>" + inscrito.batalhouAntes + "</td>";
+                resultado += "</tr>";
+            }
+            tabelaInscritos.innerHTML = resultado;
+        }
+
+        function cadastraBatalha() {
+            document.getElementById('box2').style.display = 'block';
+        }
+
+        document.getElementById('nome').addEventListener('change', () => {
+            document.getElementById('box3').style.display = 'block';
+        });
+
+        document.getElementById('genero').addEventListener('change', () => {
+            document.getElementById('box3').style.display = 'block';
+        });
+
+        document.getElementById('batalhouAntes').addEventListener('change', () => {
+            document.getElementById('box3').style.display = 'block';
+        });
+
+        // Inserir aqui
+        document.getElementById('cadastrar_batalha').addEventListener('click', cadastraBatalha);
+    </script>
+</head>
+<body>
+      <div class="box" id="box1" style="display: block;">
+    <h1>Sorteio da Escada</h1>
+    <div class="battle-info">
+      <label for="battle-date">Data da Batalha:</label>
+      <input type="text" id="battle-date" name="battle-date">
+      <label for="battle-number">Número da Batalha:</label>
+      <input type="text" id="battle-number" name="battle-number">
+    </div>
+    <button type="button" onclick="cadastraBatalha();">Cadastrar Batalha</button>
+  </div>
+  <div class="box" id="box2">
+    <form>
+        <label>Nome: </label><input type="text" name="nome" id="nome">
+        <label>Gênero: </label>
+        <select name="genero" id="genero">
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Não binário">Não binário</option>
+        </select>
+        <label>Já batalhou antes? </label>
+        <select name="batalhouAntes" id="batalhouAntes">
+            <option value="Sim">Sim</option>
+            <option value="Não">Não</option>
+        </select>
+        <button type="button" onclick="adicionaInscrito(document.getElementById('nome').value, document.getElementById('genero').value, document.getElementById('batalhouAntes').value);">Inscrever-se</button>
+    </form>
+    <table id="tabela-inscritos"></table>
+    <button type="button" onclick="sorteia();">Sorteio</button>
+  </div>
+    <div class="box" id="box3">
+    <table id="tabela-sorteio"></table>
+    </div>
+    </body>
+</html>
